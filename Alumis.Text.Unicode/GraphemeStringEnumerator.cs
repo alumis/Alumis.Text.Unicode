@@ -69,7 +69,11 @@ namespace Alumis.Text.Unicode
             return true;
         }
 
-        public string Current => _current;
+        public string Current
+        {
+            get => _current;
+            set => _current = value;
+        }
 
         object IEnumerator.Current => _current;
 
