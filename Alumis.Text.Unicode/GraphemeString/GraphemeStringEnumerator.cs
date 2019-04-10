@@ -8,7 +8,7 @@ namespace Alumis.Text.Unicode
 {
     partial class GraphemeString
     {
-        internal class GraphemeStringEnumerator : IEnumerator<string>
+        public class GraphemeStringEnumerator : IEnumerator<string>
         {
             public GraphemeStringEnumerator(GraphemeString str)
             {

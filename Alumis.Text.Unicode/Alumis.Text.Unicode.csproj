@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Authors>Emil Müller</Authors>
+    <Company>Alumis AS</Company>
+    <Description>Unicode utilities library for e.g. iterating grapheme clusters</Description>
+    <Copyright>Alumis AS 2019</Copyright>
+    <PackageProjectUrl></PackageProjectUrl>
+    <RepositoryUrl>https://github.com/alumis/Alumis.Text.Unicode</RepositoryUrl>
+    <PackageTags>Unicode</PackageTags>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/alumis/Alumis.Text.Unicode/master/LICENSE</PackageLicenseUrl>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
 </Project>
