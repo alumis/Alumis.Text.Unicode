@@ -22,7 +22,7 @@ namespace Alumis.Text.Unicode
             if (_hashCode != null && str._hashCode != null && _hashCode.Value != str._hashCode.Value)
                 return false;
 
-            return _value.Equals(str._value);
+            return Value.Equals(str.Value);
         }
     }
 }

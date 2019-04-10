@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Alumis.Collections;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +12,13 @@ namespace Alumis.Text.Unicode
     {
         public GraphemeString(string value)
         {
-            _value = value;
+            Value = value;
         }
 
-        string _value;
+        public string Value;
 
-        RedBlackTreeNode<GraphemeSurrogate> _surrogates;
-        RedBlackTreeNode<GraphemeCluster> _clusters;
+        public RedBlackTreeNode<GraphemeSurrogate> Surrogates;
+        public RedBlackTreeNode<GraphemeCluster> Clusters;
 
         public GraphemeString this[int index]
         {
@@ -29,7 +30,7 @@ namespace Alumis.Text.Unicode
 
         public override string ToString()
         {
-            return _value;
+            return Value;
         }
 
         public IEnumerator<string> GetEnumerator()

@@ -10,7 +10,7 @@ namespace Alumis.Text.Unicode
         public GraphemeString Substring(int startIndex, int length)
         {
             var codeUnits = GetSubstringCodeUnits(startIndex, length);
-            var str = new GraphemeString(_value.Substring(codeUnits.Index, codeUnits.Length));
+            var str = new GraphemeString(Value.Substring(codeUnits.Index, codeUnits.Length));
 
             return str;
         }
@@ -21,20 +21,20 @@ namespace Alumis.Text.Unicode
             var size = codeUnits.Length;
             var chars = new char[size];
 
-            _value.CopyTo(codeUnits.Index, chars, 0, size);
+            Value.CopyTo(codeUnits.Index, chars, 0, size);
 
             return new string(chars);
         }
 
-        Interval GetSubstringCodeUnits(int startIndex, int length)
+        UnicodeInterval GetSubstringCodeUnits(int startIndex, int length)
         {
             Index();
 
             var indexUpper = startIndex + length;
-            var graphemeClusters = _clusters;
+            var graphemeClusters = Clusters;
 
             if (graphemeClusters == null)
-                return new Interval(startIndex, indexUpper);
+                return new UnicodeInterval(startIndex, indexUpper);
 
             int codeUnitsIndex = 0, codeUnitsIndexUpper;
 
@@ -50,7 +50,7 @@ namespace Alumis.Text.Unicode
                         codeUnitsIndex = startIndex;
 
                         if (indexUpper <= graphemeClusters.Value.Interval.Index)
-                            return new Interval(codeUnitsIndex, indexUpper);
+                            return new UnicodeInterval(codeUnitsIndex, indexUpper);
 
                         break;
                     }
@@ -66,21 +66,21 @@ namespace Alumis.Text.Unicode
                     if (indexUpper <= graphemeClusters.Value.Interval.IndexUpper)
                     {
                         if (length == 0)
-                            return new Interval(codeUnitsIndex, codeUnitsIndex);
+                            return new UnicodeInterval(codeUnitsIndex, codeUnitsIndex);
 
                         else if (graphemeClusters.Value.Interval.Length == 1)
                             codeUnitsIndexUpper = graphemeClusters.Value.CodeUnitsInterval.IndexUpper;
 
                         else codeUnitsIndexUpper = graphemeClusters.Value.CodeUnitsInterval.Index + (indexUpper - graphemeClusters.Value.Interval.Index);
 
-                        return new Interval(codeUnitsIndex, codeUnitsIndexUpper);
+                        return new UnicodeInterval(codeUnitsIndex, codeUnitsIndexUpper);
                     }
 
                     break;
                 }
             }
 
-            for (graphemeClusters = _clusters; ;)
+            for (graphemeClusters = Clusters; ;)
             {
                 if (indexUpper < graphemeClusters.Value.Interval.Index)
                     graphemeClusters = graphemeClusters.Left;
@@ -91,14 +91,14 @@ namespace Alumis.Text.Unicode
                 else
                 {
                     if (length == 0)
-                        return new Interval(codeUnitsIndex, codeUnitsIndex);
+                        return new UnicodeInterval(codeUnitsIndex, codeUnitsIndex);
 
                     else if (graphemeClusters.Value.Interval.Length == 1)
                         codeUnitsIndexUpper = graphemeClusters.Value.CodeUnitsInterval.IndexUpper;
 
                     else codeUnitsIndexUpper = graphemeClusters.Value.CodeUnitsInterval.Index + (indexUpper - graphemeClusters.Value.Interval.Index);
 
-                    return new Interval(codeUnitsIndex, codeUnitsIndexUpper);
+                    return new UnicodeInterval(codeUnitsIndex, codeUnitsIndexUpper);
                 }
             }
         }

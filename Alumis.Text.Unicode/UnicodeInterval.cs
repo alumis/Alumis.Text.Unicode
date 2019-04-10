@@ -5,11 +5,11 @@ using System.Text;
 
 namespace Alumis.Text.Unicode
 {
-    struct Interval
+    public struct UnicodeInterval
     {
         public int Index, IndexUpper;
 
-        public Interval(int index, int indexUpper)
+        public UnicodeInterval(int index, int indexUpper)
         {
             Index = index;
             IndexUpper = indexUpper;

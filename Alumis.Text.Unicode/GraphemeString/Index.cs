@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Alumis.Collections;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,7 +9,7 @@ namespace Alumis.Text.Unicode
     {
         bool _hasIndexed;
 
-        void Index()
+        public void Index()
         {
             if (_hasIndexed)
                 return;
@@ -16,7 +17,7 @@ namespace Alumis.Text.Unicode
             Normalize();
 
             var codeUnitsIndex = 0;
-            var codeUnitsIndexUpper = _value.Length;
+            var codeUnitsIndexUpper = Value.Length;
 
             RedBlackTreeNode<GraphemeSurrogate> surrogate = null;
             RedBlackTreeNode<GraphemeCluster> graphemeCluster = null;
@@ -26,16 +27,16 @@ namespace Alumis.Text.Unicode
 
             uint Read()
             {
-                var codeUnit = _value[codeUnitsIndex];
+                var codeUnit = Value[codeUnitsIndex];
 
                 if ((codeUnit & 0xfffffc00) == 0xd800) // U16_IS_LEAD
                 {
                     surrogate = new RedBlackTreeNode<GraphemeSurrogate>() { Value = new GraphemeSurrogate() { CodePointsIndex = cpIndex++, CodePointsIndexUpper = cpIndex, CodeUnits = codeUnitsIndex } };
 
-                    RedBlackTree.InsertRight(surrogate, ref _surrogates);
-                    RedBlackTree.Balance(surrogate, ref _surrogates);
+                    RedBlackTree.InsertRight(surrogate, ref Surrogates);
+                    RedBlackTree.Balance(surrogate, ref Surrogates);
 
-                    var cp = ((uint)codeUnit << 10) + _value[codeUnitsIndex + 1] - ((0xd800 << 10) + 0xdc00 - 0x10000); // U16_GET_SUPPLEMENTARY
+                    var cp = ((uint)codeUnit << 10) + Value[codeUnitsIndex + 1] - ((0xd800 << 10) + 0xdc00 - 0x10000); // U16_GET_SUPPLEMENTARY
 
                     codeUnitsIndex += 2;
 
@@ -47,17 +48,17 @@ namespace Alumis.Text.Unicode
 
                 ++cpIndex;
 
-                return _value[codeUnitsIndex++];
+                return Value[codeUnitsIndex++];
             }
 
             void Forward()
             {
-                if ((_value[codeUnitsIndex] & 0xfffffc00) == 0xd800) // U16_IS_LEAD
+                if ((Value[codeUnitsIndex] & 0xfffffc00) == 0xd800) // U16_IS_LEAD
                 {
                     surrogate = new RedBlackTreeNode<GraphemeSurrogate>() { Value = new GraphemeSurrogate() { CodePointsIndex = cpIndex++, CodePointsIndexUpper = cpIndex, CodeUnits = codeUnitsIndex } };
 
-                    RedBlackTree.InsertRight(surrogate, ref _surrogates);
-                    RedBlackTree.Balance(surrogate, ref _surrogates);
+                    RedBlackTree.InsertRight(surrogate, ref Surrogates);
+                    RedBlackTree.Balance(surrogate, ref Surrogates);
 
                     codeUnitsIndex += 2;
                 }
@@ -71,10 +72,10 @@ namespace Alumis.Text.Unicode
 
             uint Peek(int index)
             {
-                var codeUnit = _value[index];
+                var codeUnit = Value[index];
 
                 if ((codeUnit & 0xfffffc00) == 0xd800) // U16_IS_LEAD
-                    return ((uint)codeUnit << 10) + _value[index + 1] - ((0xd800 << 10) + 0xdc00 - 0x10000); // U16_GET_SUPPLEMENTARY
+                    return ((uint)codeUnit << 10) + Value[index + 1] - ((0xd800 << 10) + 0xdc00 - 0x10000); // U16_GET_SUPPLEMENTARY
 
                 return codeUnit;
             }
@@ -83,20 +84,20 @@ namespace Alumis.Text.Unicode
             {
                 if (codeUnitsStart - index == 2)
                 {
-                    var gc = new RedBlackTreeNode<GraphemeCluster>() { Value = new GraphemeCluster() { Interval = new Interval(graphemeClusterIndex++, graphemeClusterIndex), CodeUnitsInterval = new Interval(index, codeUnitsStart) } };
+                    var gc = new RedBlackTreeNode<GraphemeCluster>() { Value = new GraphemeCluster() { Interval = new UnicodeInterval(graphemeClusterIndex++, graphemeClusterIndex), CodeUnitsInterval = new UnicodeInterval(index, codeUnitsStart) } };
 
-                    RedBlackTree.InsertRight(gc, ref _clusters);
-                    RedBlackTree.Balance(gc, ref _clusters);
+                    RedBlackTree.InsertRight(gc, ref Clusters);
+                    RedBlackTree.Balance(gc, ref Clusters);
 
                     graphemeCluster = null;
                 }
 
-                else if (graphemeCluster == null && _clusters != null)
+                else if (graphemeCluster == null && Clusters != null)
                 {
-                    graphemeCluster = new RedBlackTreeNode<GraphemeCluster>() { Value = new GraphemeCluster() { Interval = new Interval(graphemeClusterIndex++, graphemeClusterIndex), CodeUnitsInterval = new Interval(index, codeUnitsStart) } };
+                    graphemeCluster = new RedBlackTreeNode<GraphemeCluster>() { Value = new GraphemeCluster() { Interval = new UnicodeInterval(graphemeClusterIndex++, graphemeClusterIndex), CodeUnitsInterval = new UnicodeInterval(index, codeUnitsStart) } };
 
-                    RedBlackTree.InsertRight(graphemeCluster, ref _clusters);
-                    RedBlackTree.Balance(graphemeCluster, ref _clusters);
+                    RedBlackTree.InsertRight(graphemeCluster, ref Clusters);
+                    RedBlackTree.Balance(graphemeCluster, ref Clusters);
                 }
 
                 else
@@ -146,20 +147,20 @@ namespace Alumis.Text.Unicode
                                 else break;
                             }
 
-                            var gc = new RedBlackTreeNode<GraphemeCluster>() { Value = new GraphemeCluster() { Interval = new Interval(graphemeClusterIndex++, graphemeClusterIndex), CodeUnitsInterval = new Interval(index, codeUnitsIndex) } };
+                            var gc = new RedBlackTreeNode<GraphemeCluster>() { Value = new GraphemeCluster() { Interval = new UnicodeInterval(graphemeClusterIndex++, graphemeClusterIndex), CodeUnitsInterval = new UnicodeInterval(index, codeUnitsIndex) } };
 
-                            RedBlackTree.InsertRight(gc, ref _clusters);
-                            RedBlackTree.Balance(gc, ref _clusters);
+                            RedBlackTree.InsertRight(gc, ref Clusters);
+                            RedBlackTree.Balance(gc, ref Clusters);
 
                             graphemeCluster = null;
 
                             goto loop;
                         }
 
-                        graphemeCluster = new RedBlackTreeNode<GraphemeCluster>() { Value = new GraphemeCluster() { Interval = new Interval(graphemeClusterIndex, graphemeClusterIndex + 1), CodeUnitsInterval = new Interval(index, codeUnitsIndex) } };
+                        graphemeCluster = new RedBlackTreeNode<GraphemeCluster>() { Value = new GraphemeCluster() { Interval = new UnicodeInterval(graphemeClusterIndex, graphemeClusterIndex + 1), CodeUnitsInterval = new UnicodeInterval(index, codeUnitsIndex) } };
 
-                        RedBlackTree.InsertRight(graphemeCluster, ref _clusters);
-                        RedBlackTree.Balance(graphemeCluster, ref _clusters);
+                        RedBlackTree.InsertRight(graphemeCluster, ref Clusters);
+                        RedBlackTree.Balance(graphemeCluster, ref Clusters);
 
                         _hasIndexed = true;
                         return;

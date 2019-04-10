@@ -1,62 +1,62 @@
-﻿namespace Alumis.Text.Unicode
+﻿using Alumis.Collections;
+
+namespace Alumis.Text.Unicode
 {
-    partial class GraphemeString
+    public struct GraphemeCluster
     {
-        internal struct GraphemeCluster
+        public UnicodeInterval Interval, CodeUnitsInterval;
+
+        public static bool Extends(uint a, uint b)
         {
-            public Interval Interval, CodeUnitsInterval;
+            var A = GetPropertyValue(a);
+            var B = GetPropertyValue(b);
 
-            public static bool Extends(uint a, uint b)
-            {
-                var A = GetPropertyValue(a);
-                var B = GetPropertyValue(b);
+            if (A == GraphemeClusterBreakType.Cr && B == GraphemeClusterBreakType.Lf)
+                return true;
 
-                if (A == GraphemeClusterBreakType.Cr && B == GraphemeClusterBreakType.Lf)
-                    return true;
-
-                if (A == GraphemeClusterBreakType.Control || A == GraphemeClusterBreakType.Cr || A == GraphemeClusterBreakType.Lf || B == GraphemeClusterBreakType.Control || B == GraphemeClusterBreakType.Cr || B == GraphemeClusterBreakType.Lf)
-                    return false;
-
-                if (A == GraphemeClusterBreakType.L && (B == GraphemeClusterBreakType.L || B == GraphemeClusterBreakType.V || B == GraphemeClusterBreakType.Lv || B == GraphemeClusterBreakType.Lvt))
-                    return true;
-
-                if ((A == GraphemeClusterBreakType.Lv || A == GraphemeClusterBreakType.V) && (B == GraphemeClusterBreakType.V || B == GraphemeClusterBreakType.T))
-                    return true;
-
-                if ((A == GraphemeClusterBreakType.Lvt || A == GraphemeClusterBreakType.T) && B == GraphemeClusterBreakType.T)
-                    return true;
-
-                if (B == GraphemeClusterBreakType.Extend || B == GraphemeClusterBreakType.SpacingMark || A == GraphemeClusterBreakType.Prepend)
-                    return true;
-
+            if (A == GraphemeClusterBreakType.Control || A == GraphemeClusterBreakType.Cr || A == GraphemeClusterBreakType.Lf || B == GraphemeClusterBreakType.Control || B == GraphemeClusterBreakType.Cr || B == GraphemeClusterBreakType.Lf)
                 return false;
-            }
 
-            static GraphemeClusterBreakType GetPropertyValue(uint cp)
+            if (A == GraphemeClusterBreakType.L && (B == GraphemeClusterBreakType.L || B == GraphemeClusterBreakType.V || B == GraphemeClusterBreakType.Lv || B == GraphemeClusterBreakType.Lvt))
+                return true;
+
+            if ((A == GraphemeClusterBreakType.Lv || A == GraphemeClusterBreakType.V) && (B == GraphemeClusterBreakType.V || B == GraphemeClusterBreakType.T))
+                return true;
+
+            if ((A == GraphemeClusterBreakType.Lvt || A == GraphemeClusterBreakType.T) && B == GraphemeClusterBreakType.T)
+                return true;
+
+            if (B == GraphemeClusterBreakType.Extend || B == GraphemeClusterBreakType.SpacingMark || A == GraphemeClusterBreakType.Prepend)
+                return true;
+
+            return false;
+        }
+
+        static GraphemeClusterBreakType GetPropertyValue(uint cp)
+        {
+            var node = _graphemeClusterBreakRanges; // TODO: Replace with array for high-end devices
+
+            for (; ; )
             {
-                var node = _graphemeClusterBreakRanges; // TODO: Replace with array for high-end devices
+                if (cp < node.Value.Index)
+                    node = node.Left;
 
-                for (; ; )
-                {
-                    if (cp < node.Value.Index)
-                        node = node.Left;
+                else if (node.Value.IndexEnd < cp)
+                    node = node.Right;
 
-                    else if (node.Value.IndexEnd < cp)
-                        node = node.Right;
+                else return node.Value.Type;
 
-                    else return node.Value.Type;
-
-                    if (node == null)
-                        return GraphemeClusterBreakType.Other;
-                }
+                if (node == null)
+                    return GraphemeClusterBreakType.Other;
             }
+        }
 
-            static RedBlackTreeNode<GraphemeClusterBreakRange> _graphemeClusterBreakRanges;
+        static RedBlackTreeNode<GraphemeClusterBreakRange> _graphemeClusterBreakRanges;
 
-            static GraphemeCluster()
+        static GraphemeCluster()
+        {
+            var ranges = new int[][]
             {
-                var ranges = new int[][]
-                {
                     new [] { 0, 9, 1 },
                     new [] { 10, 10, 5 },
                     new [] { 11, 12, 1 },
@@ -1287,50 +1287,49 @@
                     new [] { 917504, 917759, 1 },
                     new [] { 917760, 917999, 3 },
                     new [] { 918000, 921599, 1 }
-                };
+            };
 
-                for (var i = 0; i < ranges.Length; ++i)
-                {
-                    var range = ranges[i];
-
-                    var node = new RedBlackTreeNode<GraphemeClusterBreakRange>() { Value = new GraphemeClusterBreakRange(range[0], range[1], (GraphemeClusterBreakType)range[2]) };
-
-                    RedBlackTree.InsertRight(node, ref _graphemeClusterBreakRanges);
-                    RedBlackTree.Balance(node, ref _graphemeClusterBreakRanges);
-                }
-
-                ranges = null;
-            }
-
-            struct GraphemeClusterBreakRange
+            for (var i = 0; i < ranges.Length; ++i)
             {
-                public GraphemeClusterBreakRange(int index, int indexEnd, GraphemeClusterBreakType type)
-                {
-                    Index = index;
-                    IndexEnd = indexEnd;
-                    Type = type;
-                }
+                var range = ranges[i];
 
-                public int Index, IndexEnd;
-                public GraphemeClusterBreakType Type;
+                var node = new RedBlackTreeNode<GraphemeClusterBreakRange>() { Value = new GraphemeClusterBreakRange(range[0], range[1], (GraphemeClusterBreakType)range[2]) };
+
+                RedBlackTree.InsertRight(node, ref _graphemeClusterBreakRanges);
+                RedBlackTree.Balance(node, ref _graphemeClusterBreakRanges);
             }
 
-            enum GraphemeClusterBreakType
+            ranges = null;
+        }
+
+        struct GraphemeClusterBreakRange
+        {
+            public GraphemeClusterBreakRange(int index, int indexEnd, GraphemeClusterBreakType type)
             {
-                Other,
-                Control,
-                Cr,
-                Extend,
-                L,
-                Lf,
-                Lv,
-                Lvt,
-                T,
-                V,
-                SpacingMark,
-                Prepend,
-                Count
+                Index = index;
+                IndexEnd = indexEnd;
+                Type = type;
             }
+
+            public int Index, IndexEnd;
+            public GraphemeClusterBreakType Type;
+        }
+
+        enum GraphemeClusterBreakType
+        {
+            Other,
+            Control,
+            Cr,
+            Extend,
+            L,
+            Lf,
+            Lv,
+            Lvt,
+            T,
+            V,
+            SpacingMark,
+            Prepend,
+            Count
         }
     }
 }

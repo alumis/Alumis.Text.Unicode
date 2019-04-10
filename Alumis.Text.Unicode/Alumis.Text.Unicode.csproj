@@ -12,7 +12,11 @@
     <RepositoryUrl>https://github.com/alumis/Alumis.Text.Unicode</RepositoryUrl>
     <PackageTags>Unicode</PackageTags>
     <PackageLicenseUrl>https://raw.githubusercontent.com/alumis/Alumis.Text.Unicode/master/LICENSE</PackageLicenseUrl>
-    <Version>1.0.2</Version>
+    <Version>1.0.5</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Alumis.Collections.RedBlackTree" Version="1.0.0" />
+  </ItemGroup>
 
 </Project>

@@ -15,7 +15,7 @@ namespace Alumis.Text.Unicode
 
             Normalize();
 
-            var hashCode = _value.GetHashCode();
+            var hashCode = Value.GetHashCode();
 
             _hashCode = hashCode;
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Alumis.Collections;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -108,7 +109,7 @@ namespace Alumis.Text.Unicode
             return false;
         }
 
-        static RedBlackTreeNode<Interval> _xidContinueRanges, _xidStartRanges;
+        static RedBlackTreeNode<UnicodeInterval> _xidContinueRanges, _xidStartRanges;
 
         public static bool HasBinaryPropertyXidContinue(this uint cp)
         {
@@ -797,7 +798,7 @@ namespace Alumis.Text.Unicode
             {
                 var range = ranges[i];
 
-                var node = new RedBlackTreeNode<Interval>() { Value = new Interval(range[0], range[1]) };
+                var node = new RedBlackTreeNode<UnicodeInterval>() { Value = new UnicodeInterval(range[0], range[1]) };
 
                 RedBlackTree.InsertRight(node, ref _xidContinueRanges);
                 RedBlackTree.Balance(node, ref _xidContinueRanges);
@@ -1356,7 +1357,7 @@ namespace Alumis.Text.Unicode
             {
                 var range = ranges[i];
 
-                var node = new RedBlackTreeNode<Interval>() { Value = new Interval(range[0], range[1]) };
+                var node = new RedBlackTreeNode<UnicodeInterval>() { Value = new UnicodeInterval(range[0], range[1]) };
 
                 RedBlackTree.InsertRight(node, ref _xidStartRanges);
                 RedBlackTree.Balance(node, ref _xidStartRanges);

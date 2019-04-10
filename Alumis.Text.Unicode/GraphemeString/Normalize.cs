@@ -15,7 +15,7 @@ namespace Alumis.Text.Unicode
             if (_isNormalized)
                 return;
 
-            _value = _value.Normalize(NormalizationForm.FormD);
+            Value = Value.Normalize(NormalizationForm.FormD);
             _isNormalized = true;
         }
     }

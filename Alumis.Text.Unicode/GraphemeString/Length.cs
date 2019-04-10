@@ -17,9 +17,9 @@ namespace Alumis.Text.Unicode
 
                 Index();
 
-                var length = _clusters == null ?
-                    _value.Length :
-                    _clusters.Rightmost.Value.Interval.IndexUpper;
+                var length = Clusters == null ?
+                    Value.Length :
+                    Clusters.Rightmost.Value.Interval.IndexUpper;
 
                 _length = length;
 
