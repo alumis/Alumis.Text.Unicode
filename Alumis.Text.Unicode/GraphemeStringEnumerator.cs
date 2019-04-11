@@ -21,6 +21,8 @@ namespace Alumis.Text.Unicode
 
         string _current;
 
+        public int CurrentUtf16Position;
+
         //RedBlackTreeNode<GraphemeCluster> _state.CurrentGraphemeCluster;
         //int _state.CurrentIndex;
         //string _current;
@@ -38,7 +40,7 @@ namespace Alumis.Text.Unicode
             {
                 if (Position.Index < _string.Value.Length)
                 {
-                    _current = _string.Value[Position.Index++].ToString();
+                    _current = _string.Value[CurrentUtf16Position = Position.Index++].ToString();
                     return true;
                 }
 
@@ -47,7 +49,7 @@ namespace Alumis.Text.Unicode
 
             if (Position.Index < Position.GraphemeCluster.Value.Interval.Index)
             {
-                _current = _string.Value[Position.Index++].ToString();
+                _current = _string.Value[CurrentUtf16Position = Position.Index++].ToString();
                 return true;
             }
 
@@ -59,13 +61,13 @@ namespace Alumis.Text.Unicode
 
             if (Position.GraphemeCluster.Value.Interval.Length == 1)
             {
-                _current = _string.Value.Substring(Position.GraphemeCluster.Value.CodeUnitsInterval.Index, Position.GraphemeCluster.Value.CodeUnitsInterval.Length);
+                _current = _string.Value.Substring(CurrentUtf16Position = Position.GraphemeCluster.Value.CodeUnitsInterval.Index, Position.GraphemeCluster.Value.CodeUnitsInterval.Length);
                 Position.Index++;
 
                 return true;
             }
 
-            _current = _string.Value[Position.GraphemeCluster.Value.CodeUnitsInterval.Index + (Position.Index++ - Position.GraphemeCluster.Value.Interval.Index)].ToString();
+            _current = _string.Value[CurrentUtf16Position = Position.GraphemeCluster.Value.CodeUnitsInterval.Index + (Position.Index++ - Position.GraphemeCluster.Value.Interval.Index)].ToString();
             return true;
         }
 

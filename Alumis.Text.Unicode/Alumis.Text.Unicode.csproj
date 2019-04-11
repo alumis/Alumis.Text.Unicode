@@ -12,7 +12,7 @@
     <RepositoryUrl>https://github.com/alumis/Alumis.Text.Unicode</RepositoryUrl>
     <PackageTags>Unicode</PackageTags>
     <PackageLicenseUrl>https://raw.githubusercontent.com/alumis/Alumis.Text.Unicode/master/LICENSE</PackageLicenseUrl>
-    <Version>1.0.7</Version>
+    <Version>1.0.8</Version>
   </PropertyGroup>
 
   <ItemGroup>
