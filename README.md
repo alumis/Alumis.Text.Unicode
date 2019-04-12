@@ -38,7 +38,7 @@ foreach (var s in graphemeString)
 ```
 
 ## Extension methods
-
+```
 void AppendCodePoint(this StringBuilder stringBuilder, uint cp);
 byte GetUtf8Lo(this byte b);
 bool IsUtf8Lo(this byte b);
@@ -51,7 +51,7 @@ bool IsWhitespaceGrapheme(this string str);
 // The following two methods are useful for tokenization (see http://www.unicode.org/reports/tr31/tr31-31.html#Default_Identifier_Syntax)
 bool HasBinaryPropertyXidContinue(this uint cp);
 bool HasBinaryPropertyXidStart(this uint cp);
-
+```
 ## Installation
 
 ### Package Manager
