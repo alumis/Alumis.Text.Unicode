@@ -30,3 +30,17 @@ graphemeString = new Alumis.Text.Unicode.GraphemeString(utf16String);
 Console.WriteLine(utf16String.Substring(0, 5)); // g̈tes
 Console.WriteLine(graphemeString.Substring(0, 5)); // g̈test
 ```
+
+## Installation
+
+### Package Manager
+
+Install-Package Alumis.Text.Unicode -Version 1.0.8
+
+### .NET CLI
+
+dotnet add package Alumis.Text.Unicode --version 1.0.8
+
+### Paket CLI
+
+paket add Alumis.Text.Unicode --version 1.0.8
