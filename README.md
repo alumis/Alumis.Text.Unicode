@@ -1,6 +1,6 @@
 # Alumis.Text.Unicode
 
-This library’s main goal is to treat Unicode strings are a series of grapheme clusters, as opposed to a series of UTF-16 code units (char).
+This library’s main goal is to treat Unicode strings as a series of grapheme clusters, as opposed to a series of UTF-16 code units (char).
 
 This is implemented via the class GraphemeString.
 
