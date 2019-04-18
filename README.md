@@ -57,12 +57,12 @@ bool IsWhitespaceGrapheme(this string str);
 
 ### Package Manager
 
-Install-Package Alumis.Text.Unicode -Version 1.0.8
+Install-Package Alumis.Text.Unicode
 
 ### .NET CLI
 
-dotnet add package Alumis.Text.Unicode --version 1.0.8
+dotnet add package Alumis.Text.Unicode
 
 ### Paket CLI
 
-paket add Alumis.Text.Unicode --version 1.0.8
+paket add Alumis.Text.Unicode
